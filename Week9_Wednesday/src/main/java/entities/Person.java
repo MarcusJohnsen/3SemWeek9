@@ -1,6 +1,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 
 @Entity
@@ -26,24 +26,17 @@ public class Person implements Serializable {
     private String lastName;
     private String phone;
     
-//    @Temporal(TemporalType.DATE)
-//    private Date created;
-//    @Temporal(TemporalType.DATE)
-//    private Date lastEdited;
-
-    /*public Person(String firstName, String lastName, String phone, Date created, Date lastEdited) {
-        
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.created = created;
-        this.lastEdited = lastEdited;
-    }*/
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date created;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date lastEdited;
     
     public Person(String firstName, String lastName, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
+        this.created = Date.from(Instant.now());
+        this.lastEdited = Date.from(Instant.now());
     }
     
     public Person() {
@@ -81,19 +74,19 @@ public class Person implements Serializable {
         this.phone = phone;
     }
 
-//    public Date getCreated() {
-//        return created;
-//    }
-//
-//    public void setCreated(Date created) {
-//        this.created = created;
-//    }
-//
-//    public Date getLastEdited() {
-//        return lastEdited;
-//    }
-//
-//    public void setLastEdited(Date lastEdited) {
-//        this.lastEdited = lastEdited;
-//    }
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getLastEdited() {
+        return lastEdited;
+    }
+
+    public void setLastEdited(Date lastEdited) {
+        this.lastEdited = lastEdited;
+    }
 }
