@@ -4,17 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dto.PersonDTO;
 import dto.PersonsDTO;
+import exceptions.PersonNotFoundException;
 import utils.EMF_Creator;
 import facades.PersonFacade;
-import java.util.List;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 @Path("person")
@@ -36,7 +35,15 @@ public class PersonResource {
         return "{\"msg\":\"Hello World\"}";
     }
     
-    @Path("/allPersons")
+    @Path("count")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getPersonCount() {
+        long count = FACADE.getPersonCount();
+        return "{\"count\":" + count + "}";
+    }
+    
+    @Path("/all")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public String getAllPersons() {
@@ -45,41 +52,51 @@ public class PersonResource {
     }
     
     @Path("/id/{id}")
-    @GET
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public String getPersonByID(@PathParam ("id") int id) {
+    public String getPersonByID(@PathParam ("id") int id) throws PersonNotFoundException {
         try {
             PersonDTO result = FACADE.getPerson(id);
             return GSON.toJson(result);
-        } catch (NoResultException ex) {
+        } catch (PersonNotFoundException ex) {
             return GSON.toJson(null);
         }
     }
     
-    //*** EGEN NOTE:       URL-eksempel på dette er: http://localhost:8080/jpareststarter/api/person/addPerson?fName=a&lName=b&phone=1234 for at indsætte værdierne!
-    @Path("/addPerson")
-    @GET
+    @Path("/add")
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public String addNewPerson(@QueryParam("fName") String fName, @QueryParam("lName") String lName, @QueryParam("phone") String phone) {
-        PersonDTO result = FACADE.addPerson(fName, lName, phone);
+    public String addPerson(String person) {
+        PersonDTO p = GSON.fromJson(person, PersonDTO.class);
+        PersonDTO result = FACADE.addPerson(p.getFirstName(), p.getLastName(), p.getPhone());
         return GSON.toJson(result);
     }
     
-    /*@Path("/edit")
-    @GET
+    @Path("/edit")
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public String editPerson() {
+    public String editPerson(String person) throws PersonNotFoundException {
+        try {
+        PersonDTO p = GSON.fromJson(person, PersonDTO.class);
         PersonDTO result = FACADE.editPerson(p);
-    }*/
+        return GSON.toJson(result);
+        } catch (PersonNotFoundException ex) {
+            return GSON.toJson(null);
+        }
+    }
     
     @Path("/delete/{id}")
-    @GET
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public String deletePersonByID(@PathParam ("id") int id) {
         try {
             PersonDTO result = FACADE.deletePerson(id);
-            return GSON.toJson(result+" \nis now deleted");
-        } catch (NoResultException ex) {
+            return GSON.toJson(result+"is now deleted");
+        } catch (PersonNotFoundException ex) {
             return GSON.toJson(null);
         }
     }

@@ -26,6 +26,16 @@ public class PersonFacade implements IPersonFacade {
         return instance;
     }
     
+    public long getPersonCount() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            int personCount = (int) em.createQuery("SELECT COUNT(p) FROM Person p").getSingleResult();
+            return personCount;
+        } finally {
+            em.close();
+        }
+    }
+    
     @Override
     public PersonDTO getPerson(int id) throws PersonNotFoundException {
        em = emf.createEntityManager();
