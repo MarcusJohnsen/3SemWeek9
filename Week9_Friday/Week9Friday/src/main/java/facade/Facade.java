@@ -93,7 +93,7 @@ public class Facade {
         }
     }
 
-    public OrderLine createOrderLine(int quantity, ItemType itemType, Order order) {
+    public OrderLine makeOrderLine(int quantity, ItemType itemType, Order order) {
         em = EMF.createEntityManager();
         OrderLine result = new OrderLine(quantity, itemType);
         order.addOrderLine(result);
@@ -106,10 +106,10 @@ public class Facade {
             em.close();
         }
     }
-
-    public OrderLine createOrderLine(int quantity, Integer itemTypeID, Integer orderID) {
-        Order order = findOrder(orderID);
-        ItemType itemType = findItemType(itemTypeID);
-        return createOrderLine(quantity, itemType, order);
-    }
+//
+//    public OrderLine createOrderLine(int quantity, Integer itemTypeID, Integer orderID) {
+//        Order order = findOrder(orderID);
+//        ItemType itemType = findItemType(itemTypeID);
+//        return createOrderLine(quantity, itemType, order);
+//    }
 }

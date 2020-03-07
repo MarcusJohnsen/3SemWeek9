@@ -30,10 +30,10 @@ public class Order implements Serializable {
         this.customer = customer;
     }
 
-    public Order(Customer customer, double totalPrice) {
-        this.customer = customer;
-        this.totalPrice = totalPrice;
-    }
+//    public Order(Customer customer, double totalPrice) {
+//        this.customer = customer;
+//        this.totalPrice = totalPrice;
+//    }
 
     public Order() {}
 
